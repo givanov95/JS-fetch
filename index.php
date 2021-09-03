@@ -28,6 +28,7 @@
          * Required attribute: [data-submit-path] - path to page where we will send the POST query
          */
     ?>
+    <script src="jsFetch.js"></script>
 </body>
 
 </html>
