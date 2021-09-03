@@ -1,6 +1,10 @@
 <?php
 
+/**
+ * Example file with data that we'll fetch and show in the main page, in class ".js-ajac-load"
+ */
 
+// example DB connecton
 $conn = mysqli_connect('localhost', 'db_user', 'bBc7svkg]1IPRCXv', 'jsFetch');
 if (!$conn) {
     echo 'no database';
@@ -8,7 +12,7 @@ if (!$conn) {
 }
 mysqli_set_charset($conn, 'utf8');
 
-
+// Query to select data from DB table
 $query = "SELECT * FROM fetchdata";
 $stmt = $conn->prepare($query);
 $stmt->execute();
@@ -19,11 +23,12 @@ $result = $result->fetch_assoc();
 
 ?>
 
+<!-- Import bootstrap  -->
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 </head>
 
-
+<!-- data to show  -->
 <div class="container" style="max-width: 500px;">
     <div class="row">
         <div class="form-group col-5">

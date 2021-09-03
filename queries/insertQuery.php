@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Example insert query after the data is sent with Ajax from the jsFetch.js
+ */
 
 $conn = mysqli_connect('localhost', 'db_user', 'bBc7svkg]1IPRCXv', 'jsFetch');
 if (!$conn) {
