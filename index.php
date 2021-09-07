@@ -18,7 +18,7 @@
     </div>
 
     <!-- Dynamic content  -->
-    <div class="js-ajax-load" id="container" data-parameters="request_id=222,other=555" data-load-path="/jsFetch/queries/formHandler.php" data-submit-path="/jsFetch/queries/insertQuery.php"></div>
+    <div class="js-ajax-load" id="container" data-load-path="/jsFetch/queries/formHandler.php?request_id=aaa" data-submit-path="/jsFetch/queries/insertQuery.php?request_id=aaa"></div>
     <!-- /. Dynamic content  -->
 
     <?php

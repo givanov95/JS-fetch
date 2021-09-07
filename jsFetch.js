@@ -16,41 +16,10 @@
         const loadPath = load.getAttribute("data-load-path");
         const formContainer = load.id;
         const submitPath = load.getAttribute("data-submit-path");
-        const parameters = load.getAttribute("data-parameters");
 
-        sendGetParameters(loadPath, parameters);
-        handleFetch(loadPath, formContainer, submitPath, parameters);
+        handleFetch(loadPath, formContainer, submitPath);
 
     }
-
-
-    function sendGetParameters(url, parameters) {
-        const feed = {};
-        const params = parameters.split(',');
-
-        for(const par of params) {
-                
-            const parSplit = par.split("=");             
-            feed[parSplit[0]] = parSplit[1];
-            
-        }
-
-        fetch(url, {
-            method: 'POST', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(feed),
-        })
-            .then(response => response.text())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
-    } 
 
 
     /**
@@ -58,11 +27,9 @@
      * @param formContainer Automatically get this param from .js-ajax-load class
      * @param submitPath The path to the file where we'll send the POST query 
      */
-    function handleFetch(loadPath, formContainer, submitPath, parameters) {
+    function handleFetch(loadPath, formContainer, submitPath) {
 
         const container = document.querySelector(`#${formContainer}`);
-
-        const params = parameters.split(',');
         /**
          * create a Promise, so we'll know that the content's been loaded in .js-ajax-load before run the other JS operation
         */
@@ -85,16 +52,15 @@
                     for (const sender of allSubmitters) {
 
                         if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
+
                             sender.addEventListener("click", () => {
-                                sendDataFn(loadPath, formContainer, params);
-                                sendDataFn(submitPath, formContainer, params);
+                                sendDataFn(submitPath, formContainer);
                             });
                         }
 
                         if (sender.tagName == "SELECT") {
                             sender.addEventListener("change", () => {
-                                sendDataFn(loadPath, formContainer, params); // Send data to load path
-                                sendDataFn(submitPath, formContainer, params); // Send data to submit path
+                                sendDataFn(submitPath, formContainer);
                             });
                         }
                     }
@@ -110,7 +76,7 @@
          * @param formContainer Automatically get this param from .js-ajax-load class
          * @param submitPath The path to the file where we'll send the POST query 
          */
-        function sendDataFn(submitPath, formContainer, params) {
+        function sendDataFn(submitPath, formContainer) {
 
             if (!validateData(formContainer)) {
                 return alert("Имате непопълнени полета задължителни полета (*) или невалидни данни");
@@ -151,17 +117,9 @@
                 const inpValue = input.value;
                 feed[inpName] = inpValue;
 
-            }
 
-      
-            for(const par of params) {
-                
-                const parSplit = par.split("=");             
-                feed[parSplit[0]] = parSplit[1];
-                
-            }
-    
 
+            }
             sendPost(url, feed);
 
             /**
@@ -222,7 +180,7 @@
             let validationFail = false;
 
             // Validate required checkboxes and set them red border if not pass
-            for (const requiredCheckbox of requiredCheckboxes) {
+            for (requiredCheckbox of requiredCheckboxes) {
                 requiredCheckbox.closest(".form-group").querySelector("label").classList.remove("text-danger");
                 if (!requiredCheckbox.checked) {
                     requiredCheckbox.closest(".form-group").querySelector("label").classList.add("text-danger");
@@ -231,7 +189,7 @@
             }
 
             // Validate required inputs and set them red border if not pass
-            for (requiredInput of requiredInputs) {
+            for (const requiredInput of requiredInputs) {
 
                 requiredInput.classList.remove("boder", "border-danger");
                 requiredInput.closest(".form-group").querySelector("label").classList.remove("text-danger");

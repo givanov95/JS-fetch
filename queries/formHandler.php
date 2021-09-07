@@ -15,9 +15,16 @@ mysqli_set_charset($conn, 'utf8');
 $post_query = json_decode(file_get_contents('php://input'));
 
 
+
+echo '<pre>';
+var_dump($_GET);
+echo '</pre>';
+exit;
+
 // Query to select data from DB table
-$query = "SELECT * FROM fetchdata";
+$query = "SELECT * FROM fetchdata WHERE `name` = ? ";
 $stmt = $conn->prepare($query);
+$stmt->bind_param('s', $post_query->name);
 $stmt->execute();
 $result = $stmt->get_result();
 $all_results = [];
