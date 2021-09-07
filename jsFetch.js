@@ -16,8 +16,9 @@
         const loadPath = load.getAttribute("data-load-path");
         const formContainer = load.id;
         const submitPath = load.getAttribute("data-submit-path");
+        const parameters = load.getAttribute("data-parameters");
 
-        handleFetch(loadPath, formContainer, submitPath);
+        handleFetch(loadPath, formContainer, submitPath, parameters);
 
     }
 
@@ -27,9 +28,11 @@
      * @param formContainer Automatically get this param from .js-ajax-load class
      * @param submitPath The path to the file where we'll send the POST query 
      */
-    function handleFetch(loadPath, formContainer, submitPath) {
+    function handleFetch(loadPath, formContainer, submitPath, parameters) {
 
         const container = document.querySelector(`#${formContainer}`);
+
+        const params = parameters.split(',');
         /**
          * create a Promise, so we'll know that the content's been loaded in .js-ajax-load before run the other JS operation
         */
@@ -52,15 +55,14 @@
                     for (const sender of allSubmitters) {
 
                         if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
-
                             sender.addEventListener("click", () => {
-                                sendDataFn(submitPath, formContainer);
+                                sendDataFn(submitPath, formContainer, params);
                             });
                         }
 
                         if (sender.tagName == "SELECT") {
                             sender.addEventListener("change", () => {
-                                sendDataFn(submitPath, formContainer);
+                                sendDataFn(submitPath, formContainer, params);
                             });
                         }
                     }
@@ -76,7 +78,7 @@
          * @param formContainer Automatically get this param from .js-ajax-load class
          * @param submitPath The path to the file where we'll send the POST query 
          */
-        function sendDataFn(submitPath, formContainer) {
+        function sendDataFn(submitPath, formContainer, params) {
 
             if (!validateData(formContainer)) {
                 return alert("Имате непопълнени полета задължителни полета (*) или невалидни данни");
@@ -117,9 +119,18 @@
                 const inpValue = input.value;
                 feed[inpName] = inpValue;
 
-
-
             }
+
+      
+            let parameterVals = [];
+            for(const par of params) {
+                
+                const parSplit = par.split("=");             
+                feed[parSplit[0]] = parSplit[1];
+                
+            }
+    
+
             sendPost(url, feed);
 
             /**

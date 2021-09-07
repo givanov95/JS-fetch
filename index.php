@@ -18,7 +18,7 @@
     </div>
 
     <!-- Dynamic content  -->
-    <div class="js-ajax-load" id="container" data-arguments="" data-load-path="/jsFetch/queries/formHandler.php" data-submit-path="/jsFetch/queries/insertQuery.php"></div>
+    <div class="js-ajax-load" id="container" data-parameters="request_id=222,other=555" data-load-path="/jsFetch/queries/formHandler.php" data-submit-path="/jsFetch/queries/insertQuery.php"></div>
     <!-- /. Dynamic content  -->
 
     <?php
@@ -26,6 +26,7 @@
          * Required class to run JS function: ".js-ajax-load"
          * Required attribute: [data-load-path] - path to page that will load in ".js-ajax-load"
          * Required attribute: [data-submit-path] - path to page where we will send the POST query
+         * Not required: [data-parameters] - additional parameters to use in the POST query after WHERE clause - !!! SET WITHOUT SPACES BETWEEN COMMAS: EXAMPLE: id=1,other=2 !!!  
          */
     ?>
     <script src="jsFetch.js"></script>
