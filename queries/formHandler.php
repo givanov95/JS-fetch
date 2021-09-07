@@ -12,6 +12,9 @@ if (!$conn) {
 }
 mysqli_set_charset($conn, 'utf8');
 
+$post_query = json_decode(file_get_contents('php://input'));
+
+
 // Query to select data from DB table
 $query = "SELECT * FROM fetchdata";
 $stmt = $conn->prepare($query);
@@ -21,7 +24,10 @@ $all_results = [];
 $stmt->close();
 $result = $result->fetch_assoc();
 
+
 ?>
+
+
 
 <!-- Import bootstrap  -->
 <head>

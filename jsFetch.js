@@ -18,9 +18,39 @@
         const submitPath = load.getAttribute("data-submit-path");
         const parameters = load.getAttribute("data-parameters");
 
+        sendGetParameters(loadPath, parameters);
         handleFetch(loadPath, formContainer, submitPath, parameters);
 
     }
+
+
+    function sendGetParameters(url, parameters) {
+        const feed = {};
+        const params = parameters.split(',');
+
+        for(const par of params) {
+                
+            const parSplit = par.split("=");             
+            feed[parSplit[0]] = parSplit[1];
+            
+        }
+
+        fetch(url, {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(feed),
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+    } 
 
 
     /**
@@ -56,13 +86,15 @@
 
                         if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
                             sender.addEventListener("click", () => {
+                                sendDataFn(loadPath, formContainer, params);
                                 sendDataFn(submitPath, formContainer, params);
                             });
                         }
 
                         if (sender.tagName == "SELECT") {
                             sender.addEventListener("change", () => {
-                                sendDataFn(submitPath, formContainer, params);
+                                sendDataFn(loadPath, formContainer, params); // Send data to load path
+                                sendDataFn(submitPath, formContainer, params); // Send data to submit path
                             });
                         }
                     }
@@ -122,7 +154,6 @@
             }
 
       
-            let parameterVals = [];
             for(const par of params) {
                 
                 const parSplit = par.split("=");             
@@ -191,7 +222,7 @@
             let validationFail = false;
 
             // Validate required checkboxes and set them red border if not pass
-            for (requiredCheckbox of requiredCheckboxes) {
+            for (const requiredCheckbox of requiredCheckboxes) {
                 requiredCheckbox.closest(".form-group").querySelector("label").classList.remove("text-danger");
                 if (!requiredCheckbox.checked) {
                     requiredCheckbox.closest(".form-group").querySelector("label").classList.add("text-danger");
