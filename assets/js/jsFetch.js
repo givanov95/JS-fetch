@@ -67,10 +67,21 @@
             const allInputs = document.querySelectorAll(`#${formContainer} input`);
             const url = `${window.location.protocol}//${window.location.host}/${submitPath}`;
             const formData = new FormData();
-            const feed = {};            
-           
+            const feed = {};
 
-            for (const input of allInputs) {               
+
+            let fetchContainer = formContainerElement.closest(".js-fetch-container");
+            let loader = fetchContainer.querySelector(".loader");
+
+            if (loader) {
+                formContainerElement.classList.add("hidden");
+                loader.classList.remove("hidden");
+            }
+
+
+
+
+            for (const input of allInputs) {
                 /**  Check if input field has attribute [disabled] DONT send the input.
                 * If the input has attribute disabled, but You WANT TO SEND THE INPUT /If you only want the user to not change it, but send it. /  - set attrubte [send-disabled-field]
                 */
@@ -121,6 +132,13 @@
                 })
                     .then(response => response.text())
                     .then(data => {
+                        let fetchContainer = formContainerElement.closest(".js-fetch-container");
+                        let loader = fetchContainer.querySelector(".loader");
+
+                        if (loader) {
+                            formContainerElement.classList.remove("hidden");
+                            loader.classList.add("hidden");
+                        }
                         console.log('Success:', data);
                     })
                     .then(() => {
@@ -143,16 +161,16 @@
                     method: 'POST',
                     body: formData,
                 })
-                .then(response => response.text())
-                .then(result => {
-                    console.log('Success:', result);
-                })
-                .then(() => {
-                    getDataFromLoadPath(loadPath, container);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                    .then(response => response.text())
+                    .then(result => {
+                        console.log('Success:', result);
+                    })
+                    .then(() => {
+                        getDataFromLoadPath(loadPath, container);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
 
 
@@ -168,7 +186,7 @@
                 .then((html) => {
                     container.innerHTML = html
                 }).then(() => {
-                   addEvents(loadPath, formContainer, submitPath);
+                    addEvents(loadPath, formContainer, submitPath);
                 });
 
         }
@@ -278,7 +296,7 @@
 
                 if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
 
-                    if (sender.getAttribute("listener") != "listen") {                   
+                    if (sender.getAttribute("listener") != "listen") {
 
                         sender.setAttribute("listener", "listen");
 
@@ -292,7 +310,7 @@
 
                 if (sender.tagName == "SELECT") {
 
-                    if (sender.getAttribute("listener") != "listen") {  
+                    if (sender.getAttribute("listener") != "listen") {
 
                         sender.setAttribute("listener", "listen");
 

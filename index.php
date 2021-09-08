@@ -9,6 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 
 <body>
@@ -18,7 +19,10 @@
     </div>
 
     <!-- Dynamic content  -->
-    <div class="js-ajax-load" id="container" data-load-path="/jsFetch/queries/formHandler.php?name=aaa" data-submit-path="/jsFetch/queries/insertQuery.php"></div>
+    <div class="js-fetch-container">
+        <div class="js-ajax-load" id="container" data-load-path="/jsFetch/queries/formHandler.php?name=aaa" data-submit-path="/jsFetch/queries/insertQuery.php"></div>
+        <div class="loader hidden"></div>
+    </div>
     <!-- /. Dynamic content  -->
 
     <?php
@@ -29,7 +33,7 @@
          * Not required: [?GET arguments] - additional parameters to use in the POST OR GET query after WHERE clause - !!! WE can use GET arguments in the POST query too !!! We can use GET argumenst dynamically - example: id of element, row, input etc.
          */
     ?>
-    <script src="jsFetch.js"></script>
+    <script src="assets/js/jsFetch.js"></script>
 </body>
 
 </html>
