@@ -42,28 +42,8 @@
                     container.innerHTML = html
                 })
                 .then(() => {
-                    const allSubmitters = document.querySelectorAll("[data-type='submit']");
-                    const filesInput = container.querySelector("[type='file']");
-                    if (filesInput) {
 
-                        filesInput.addEventListener("change", validateUploadFiles);
-                    }
-
-                    for (const sender of allSubmitters) {
-
-                        if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
-
-                            sender.addEventListener("click", () => {
-                                sendDataFn(submitPath, formContainer);
-                            });
-                        }
-
-                        if (sender.tagName == "SELECT") {
-                            sender.addEventListener("change", () => {
-                                sendDataFn(submitPath, formContainer);
-                            });
-                        }
-                    }
+                    addEvents(loadPath, formContainer, submitPath);
 
                 });
         });
@@ -76,19 +56,21 @@
          * @param formContainer Automatically get this param from .js-ajax-load class
          * @param submitPath The path to the file where we'll send the POST query 
          */
-        function sendDataFn(submitPath, formContainer) {
+        function sendDataFn(loadPath, submitPath, formContainer) {
 
             if (!validateData(formContainer)) {
                 return alert("Имате непопълнени полета задължителни полета (*) или невалидни данни");
             }
 
             const formContainerElement = document.querySelector(`#${formContainer}`);
+
             const allInputs = document.querySelectorAll(`#${formContainer} input`);
             const url = `${window.location.protocol}//${window.location.host}/${submitPath}`;
             const formData = new FormData();
-            const feed = {};
+            const feed = {};            
+           
 
-            for (const input of allInputs) {
+            for (const input of allInputs) {               
                 /**  Check if input field has attribute [disabled] DONT send the input.
                 * If the input has attribute disabled, but You WANT TO SEND THE INPUT /If you only want the user to not change it, but send it. /  - set attrubte [send-disabled-field]
                 */
@@ -113,6 +95,7 @@
 
                 }
 
+
                 const inpName = input.getAttribute("name");
                 const inpValue = input.value;
                 feed[inpName] = inpValue;
@@ -121,6 +104,7 @@
 
             }
             sendPost(url, feed);
+
 
             /**
              * @param url - the url path where to send the post query. Generated from the host url and the @const submitPath
@@ -139,11 +123,15 @@
                     .then(data => {
                         console.log('Success:', data);
                     })
+                    .then(() => {
+                        getDataFromLoadPath(loadPath, container);
+                    })
                     .catch((error) => {
                         console.error('Error:', error);
                     });
 
             }
+
 
             /**
              * 
@@ -155,14 +143,34 @@
                     method: 'POST',
                     body: formData,
                 })
-                    .then(response => response.text())
-                    .then(result => {
-                        console.log('Success:', result);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                .then(response => response.text())
+                .then(result => {
+                    console.log('Success:', result);
+                })
+                .then(() => {
+                    getDataFromLoadPath(loadPath, container);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             }
+
+
+        }
+
+
+        function getDataFromLoadPath(loadPath, container) {
+
+            fetch(loadPath)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((html) => {
+                    container.innerHTML = html
+                }).then(() => {
+                   addEvents(loadPath, formContainer, submitPath);
+                });
+
         }
 
         /**
@@ -180,7 +188,7 @@
             let validationFail = false;
 
             // Validate required checkboxes and set them red border if not pass
-            for (requiredCheckbox of requiredCheckboxes) {
+            for (const requiredCheckbox of requiredCheckboxes) {
                 requiredCheckbox.closest(".form-group").querySelector("label").classList.remove("text-danger");
                 if (!requiredCheckbox.checked) {
                     requiredCheckbox.closest(".form-group").querySelector("label").classList.add("text-danger");
@@ -259,5 +267,43 @@
 
         }
 
+        function addEvents(loadPath, formContainer, submitPath) {
+            const allSubmitters = document.querySelectorAll("[data-type='submit']");
+            const filesInput = container.querySelector("[type='file']");
+            if (filesInput) {
+
+                filesInput.addEventListener("change", validateUploadFiles);
+            }
+            for (const sender of allSubmitters) {
+
+                if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
+
+                    if (sender.getAttribute("listener") != "listen") {                   
+
+                        sender.setAttribute("listener", "listen");
+
+                        sender.addEventListener("click", (e) => {
+                            sendDataFn(loadPath, submitPath, formContainer);
+                        });
+
+                    }
+
+                }
+
+                if (sender.tagName == "SELECT") {
+
+                    if (sender.getAttribute("listener") != "listen") {  
+
+                        sender.setAttribute("listener", "listen");
+
+                        sender.addEventListener("change", (e) => {
+                            sendDataFn(loadPath, submitPath, formContainer);
+                        });
+                    }
+                }
+            }
+        }
+
     }
+
 })();
