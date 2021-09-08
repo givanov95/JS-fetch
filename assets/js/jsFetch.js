@@ -69,7 +69,7 @@
             const formData = new FormData();
             const feed = {};
 
-
+            // LOADER
             let fetchContainer = formContainerElement.closest(".js-fetch-container");
             let loader = fetchContainer.querySelector(".loader");
 
@@ -132,6 +132,10 @@
                 })
                     .then(response => response.text())
                     .then(data => {
+                        let fetchContainer = formContainerElement.closest(".js-fetch-container");
+                        let loader = fetchContainer.querySelector(".loader");
+
+                        // Loader
                         let fetchContainer = formContainerElement.closest(".js-fetch-container");
                         let loader = fetchContainer.querySelector(".loader");
 
