@@ -26,7 +26,7 @@
          * Required class to run JS function: ".js-ajax-load"
          * Required attribute: [data-load-path] - path to page that will load in ".js-ajax-load"
          * Required attribute: [data-submit-path] - path to page where we will send the POST query
-         * Not required: [?GET arguments] - additional parameters to use in the POST OR GET query after WHERE clause - !!! You can use GET arguments in the POST query too !!!  
+         * Not required: [?GET arguments] - additional parameters to use in the POST OR GET query after WHERE clause - !!! WE can use GET arguments in the POST query too !!! We can use GET argumenst dynamically - example: id of element, row, input etc.
          */
     ?>
     <script src="jsFetch.js"></script>
