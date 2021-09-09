@@ -78,8 +78,6 @@
                 loader.classList.remove("hidden");
             }
 
-            console.log(allInputs);
-
 
             for (const input of allInputs) {
                 /**  Check if input field has attribute [disabled] DONT send the input.
