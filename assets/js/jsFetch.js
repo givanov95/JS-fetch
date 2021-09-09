@@ -78,6 +78,8 @@
                 loader.classList.remove("hidden");
             }
 
+            console.log(allInputs);
+
 
             for (const input of allInputs) {
                 /**  Check if input field has attribute [disabled] DONT send the input.
@@ -137,6 +139,10 @@
                         if (loader) {
                             formContainerElement.classList.remove("hidden");
                             loader.classList.add("hidden");
+                        }
+                        if (data.includes('Location:')) {
+                            const redirect = data.split(": ");
+                            location.href=redirect[1];
                         }
                         console.log('Success:', data);
                     })
