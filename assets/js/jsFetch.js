@@ -13,9 +13,9 @@
 
     for (const load of ajaxLoad) {
 
-        const loadPath = load.getAttribute("data-load-path");
+        const loadPath = window.location.pathname + load.getAttribute("data-load-path");
         const formContainer = load.id;
-        const submitPath = load.getAttribute("data-submit-path");
+        const submitPath = window.location.pathname + load.getAttribute("data-submit-path");
 
         handleFetch(loadPath, formContainer, submitPath);
 
@@ -64,12 +64,12 @@
 
             const formContainerElement = document.querySelector(`#${formContainer}`);
 
-            const allInputs = document.querySelectorAll(`#${formContainer} input`);
+            const allInputs = document.querySelectorAll(`#${formContainer} input, #${formContainer} select`);
             const url = `${window.location.protocol}//${window.location.host}/${submitPath}`;
             const formData = new FormData();
             const feed = {};
 
-            // LOADER
+            // Loader
             let fetchContainer = formContainerElement.closest(".js-fetch-container");
             let loader = fetchContainer.querySelector(".loader");
 
@@ -78,7 +78,7 @@
                 loader.classList.remove("hidden");
             }
 
-
+            console.log(allInputs);
 
 
             for (const input of allInputs) {
@@ -132,9 +132,6 @@
                 })
                     .then(response => response.text())
                     .then(data => {
-                        let fetchContainer = formContainerElement.closest(".js-fetch-container");
-                        let loader = fetchContainer.querySelector(".loader");
-
                         // Loader
                         let fetchContainer = formContainerElement.closest(".js-fetch-container");
                         let loader = fetchContainer.querySelector(".loader");
