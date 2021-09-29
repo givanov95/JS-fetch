@@ -12,7 +12,6 @@ if (!$conn) {
 }
 mysqli_set_charset($conn, 'utf8');
 
-
 // Query to select data from DB table
 $query = "SELECT * FROM fetchdata WHERE `name` = ? ";
 $stmt = $conn->prepare($query);
@@ -21,7 +20,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 $result = $result->fetch_assoc();
-
 
 
 ?>

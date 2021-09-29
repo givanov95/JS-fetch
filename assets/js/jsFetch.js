@@ -1,6 +1,5 @@
 ;
 (function fetchHtml() {
-
     /** 
      * ajaxLoad - holds all elements that show the fetched content
      * @type {HTMLAllCollection}
@@ -42,7 +41,7 @@
                     container.innerHTML = html
                 })
                 .then(() => {
-
+                    showHiddenSection();
                     addEvents(loadPath, formContainer, submitPath);
 
                 });
@@ -56,13 +55,15 @@
          * @param formContainer Automatically get this param from .js-ajax-load class
          * @param submitPath The path to the file where we'll send the POST query 
          */
-        function sendDataFn(loadPath, submitPath, formContainer) {
+        function sendDataFn(loadPath, submitPath, formContainer, e = null) {
+
 
             if (!validateData(formContainer)) {
                 return alert("Имате непопълнени полета задължителни полета (*) или невалидни данни");
             }
 
             const formContainerElement = document.querySelector(`#${formContainer}`);
+
 
             const allInputs = document.querySelectorAll(`#${formContainer} input, #${formContainer} select`);
             const url = `${window.location.protocol}//${window.location.host}/${submitPath}`;
@@ -77,8 +78,6 @@
                 formContainerElement.classList.add("hidden");
                 loader.classList.remove("hidden");
             }
-
-            console.log(allInputs);
 
 
             for (const input of allInputs) {
@@ -107,11 +106,17 @@
                 }
 
 
+                const inputSameName = input.getAttribute("name");
+                const checkMultipleInputsWithSameNameAttr = document.querySelectorAll(`[name="${inputSameName}"]`).length;
                 const inpName = input.getAttribute("name");
-                const inpValue = input.value;
+                let inpValue;
+                if (checkMultipleInputsWithSameNameAttr > 1) {
+                    inpValue = e.currentTarget.value;
+                } else {
+                    inpValue = input.value;
+                }
+
                 feed[inpName] = inpValue;
-
-
 
             }
             sendPost(url, feed);
@@ -142,7 +147,7 @@
                         }
                         if (data.includes('Location:')) {
                             const redirect = data.split(": ");
-                            location.href=redirect[1];
+                            location.href = redirect[1];
                         }
                         console.log('Success:', data);
                     })
@@ -192,6 +197,7 @@
                     container.innerHTML = html
                 }).then(() => {
                     addEvents(loadPath, formContainer, submitPath);
+                    showHiddenSection();
                 });
 
         }
@@ -306,7 +312,7 @@
                         sender.setAttribute("listener", "listen");
 
                         sender.addEventListener("click", (e) => {
-                            sendDataFn(loadPath, submitPath, formContainer);
+                            sendDataFn(loadPath, submitPath, formContainer, e);
                         });
 
                     }
@@ -323,6 +329,34 @@
                             sendDataFn(loadPath, submitPath, formContainer);
                         });
                     }
+                }
+            }
+        }
+
+
+        function showHiddenSection() {
+
+            const showHiddenSectionTrigger = document.querySelectorAll(".show-hidden-section");
+
+
+            if (showHiddenSectionTrigger.length < 1) {
+                return;
+            }
+
+            for (const el of showHiddenSectionTrigger) {
+                el.addEventListener("click", showSelectedSection);
+
+            }
+
+            function showSelectedSection(e) {
+
+                const trigger = e.currentTarget;
+                const selector = trigger.getAttribute("data-selector");
+
+                const elementsToShow = document.querySelectorAll(`${selector}`);
+
+                for (const elToShow of elementsToShow) {
+                    elToShow.classList.remove("hidden");
                 }
             }
         }
