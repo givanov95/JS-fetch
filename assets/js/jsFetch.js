@@ -334,6 +334,11 @@
         }
 
 
+        /**
+         * 
+         * @returns void 
+         * Function set event listeners to all elements with selector ".show-hidden-section"
+         */
         function showHiddenSection() {
 
             const showHiddenSectionTrigger = document.querySelectorAll(".show-hidden-section");
@@ -347,6 +352,14 @@
                 el.addEventListener("click", showSelectedSection);
 
             }
+
+            /**
+             * 
+             * @returns void
+             * Then get the [data-selector] of the trigger element with class ".show-hidden-section";
+             * [data-selector] Holds the selector wich to Show - remove class hidden /If selector has class hidden - it removes the class/ 
+             * 
+             */
 
             function showSelectedSection(e) {
 
