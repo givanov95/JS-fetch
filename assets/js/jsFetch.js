@@ -41,6 +41,7 @@
                     container.innerHTML = html
                 })
                 .then(() => {
+                    hideSections();
                     showHiddenSection();
                     addEvents(loadPath, formContainer, submitPath);
 
