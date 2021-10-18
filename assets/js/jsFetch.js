@@ -198,6 +198,7 @@
                 }).then(() => {
                     addEvents(loadPath, formContainer, submitPath);
                     showHiddenSection();
+                    hideSections();
                 });
 
         }
@@ -371,6 +372,32 @@
                 for (const elToShow of elementsToShow) {
                     elToShow.classList.remove("hidden");
                 }
+            }
+        }
+
+        /**
+             * 
+             * @returns void
+             * Then get the [data-selector] of the trigger element with class ".hide-sections";
+             * [data-selector] Holds the selector which to Hide - add class hidden 
+             * 
+        */
+        function hideSections() {
+            const hideSectionTrigger = document.querySelectorAll(".hide-sections");
+
+            for(const hideSection of hideSectionTrigger) {
+
+                hideSection.addEventListener("click", (e)=>{
+                    const trigger = e.currentTarget;
+                    const selector = trigger.getAttribute("data-selector");
+
+                    const elementsToHide = document.querySelectorAll(`${selector}`);
+
+                    for(const elToHide of elementsToHide) {
+                        elToHide.classList.add("hidden");
+                    }
+
+                });
             }
         }
 
