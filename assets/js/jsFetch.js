@@ -41,7 +41,6 @@
                     container.innerHTML = html
                 })
                 .then(() => {
-                    hideSections();
                     showHiddenSection();
                     addEvents(loadPath, formContainer, submitPath);
 
@@ -106,9 +105,8 @@
 
                 }
 
-
                 const inputSameName = input.getAttribute("name");
-                const checkMultipleInputsWithSameNameAttr = document.querySelectorAll(`[name="${inputSameName}"]`).length;
+                const checkMultipleInputsWithSameNameAttr = input.closest(".js-fetch-container").querySelectorAll(`[name="${inputSameName}"]`).length;
                 const inpName = input.getAttribute("name");
                 let inpValue;
                 if (checkMultipleInputsWithSameNameAttr > 1) {
@@ -195,11 +193,16 @@
                     return response.text();
                 })
                 .then((html) => {
+                    // IF we use webshim Polyfill as a datepicker 
+                    if(container.htmlPolyfill(html)) {
+                        container.htmlPolyfill(html);
+                    }
+                   
                     container.innerHTML = html
                 }).then(() => {
                     addEvents(loadPath, formContainer, submitPath);
                     showHiddenSection();
-                    hideSections();
+
                 });
 
         }
@@ -373,32 +376,6 @@
                 for (const elToShow of elementsToShow) {
                     elToShow.classList.remove("hidden");
                 }
-            }
-        }
-
-        /**
-             * 
-             * @returns void
-             * Then get the [data-selector] of the trigger element with class ".hide-sections";
-             * [data-selector] Holds the selector which to Hide - add class hidden 
-             * 
-        */
-        function hideSections() {
-            const hideSectionTrigger = document.querySelectorAll(".hide-sections");
-
-            for(const hideSection of hideSectionTrigger) {
-
-                hideSection.addEventListener("click", (e)=>{
-                    const trigger = e.currentTarget;
-                    const selector = trigger.getAttribute("data-selector");
-
-                    const elementsToHide = document.querySelectorAll(`${selector}`);
-
-                    for(const elToHide of elementsToHide) {
-                        elToHide.classList.add("hidden");
-                    }
-
-                });
             }
         }
 
