@@ -29,6 +29,7 @@
     function handleFetch(loadPath, formContainer, submitPath) {
 
         const container = document.querySelector(`#${formContainer}`);
+
         /**
          * create a Promise, so we'll know that the content's been loaded in .js-ajax-load before run the other JS operation
         */
@@ -62,10 +63,9 @@
                 return alert("Имате непопълнени полета задължителни полета (*) или невалидни данни");
             }
 
-            const formContainerElement = document.querySelector(`#${formContainer}`);
+            const formContainerElement = document.querySelector(`#${formContainer}`);           
 
-
-            const allInputs = document.querySelectorAll(`#${formContainer} input, #${formContainer} select`);
+            const allInputs = document.querySelectorAll(`#${formContainer} input, #${formContainer} select, #${formContainer} textarea`);
             const url = `${window.location.protocol}//${window.location.host}/${submitPath}`;
             const formData = new FormData();
             const feed = {};
@@ -84,6 +84,7 @@
                 /**  Check if input field has attribute [disabled] DONT send the input.
                 * If the input has attribute disabled, but You WANT TO SEND THE INPUT /If you only want the user to not change it, but send it. /  - set attrubte [send-disabled-field]
                 */
+
                 if (input.getAttribute("disabled") != null && input.getAttribute("send-disabled-field") == null) {
                     continue;
                 }
@@ -111,8 +112,8 @@
                 let inpValue;
                 if (checkMultipleInputsWithSameNameAttr > 1) {
                     inpValue = e.currentTarget.value;
-                } else {
-                    inpValue = input.value;
+                } else {                
+                    inpValue = input.value;                    
                 }
 
                 feed[inpName] = inpValue;
@@ -192,13 +193,14 @@
                 .then((response) => {
                     return response.text();
                 })
-                .then((html) => {
-                    // IF we use webshim Polyfill as a datepicker 
-                    if(container.htmlPolyfill(html)) {
-                        container.htmlPolyfill(html);
+                .then((html) => {   
+                    try {
+                        // check if webshim polyfill exists 
+                        $(`#${container.id}`).htmlPolyfill(html);
+                    }catch(err) {
+                        container.innerHTML = html;
                     }
-                   
-                    container.innerHTML = html
+                
                 }).then(() => {
                     addEvents(loadPath, formContainer, submitPath);
                     showHiddenSection();
