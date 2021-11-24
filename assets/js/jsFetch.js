@@ -1,6 +1,5 @@
 ;
 (function fetchHtml() {
-
     /** 
      * ajaxLoad - holds all elements that show the fetched content
      * @type {HTMLAllCollection}
@@ -30,6 +29,7 @@
     function handleFetch(loadPath, formContainer, submitPath) {
 
         const container = document.querySelector(`#${formContainer}`);
+
         /**
          * create a Promise, so we'll know that the content's been loaded in .js-ajax-load before run the other JS operation
         */
@@ -42,9 +42,10 @@
                     container.innerHTML = html
                 })
                 .then(() => {
-
+                    showHiddenSection();
                     addEvents(loadPath, formContainer, submitPath);
                     setContainerHeight();
+
                 });
         });
 
@@ -56,15 +57,16 @@
          * @param formContainer Automatically get this param from .js-ajax-load class
          * @param submitPath The path to the file where we'll send the POST query 
          */
-        function sendDataFn(loadPath, submitPath, formContainer) {
+        function sendDataFn(loadPath, submitPath, formContainer, e = null) {
+
 
             if (!validateData(formContainer)) {
                 return alert("Имате непопълнени полета задължителни полета (*) или невалидни данни");
             }
 
-            const formContainerElement = document.querySelector(`#${formContainer}`);
+            const formContainerElement = document.querySelector(`#${formContainer}`);           
 
-            const allInputs = document.querySelectorAll(`#${formContainer} input, #${formContainer} select`);
+            const allInputs = document.querySelectorAll(`#${formContainer} input, #${formContainer} select, #${formContainer} textarea`);
             const url = `${window.location.protocol}//${window.location.host}/${submitPath}`;
             const formData = new FormData();
             const feed = {};
@@ -78,13 +80,12 @@
                 loader.classList.remove("hidden");
             }
 
-            console.log(allInputs);
-
 
             for (const input of allInputs) {
                 /**  Check if input field has attribute [disabled] DONT send the input.
                 * If the input has attribute disabled, but You WANT TO SEND THE INPUT /If you only want the user to not change it, but send it. /  - set attrubte [send-disabled-field]
                 */
+
                 if (input.getAttribute("disabled") != null && input.getAttribute("send-disabled-field") == null) {
                     continue;
                 }
@@ -106,12 +107,17 @@
 
                 }
 
-
+                const inputSameName = input.getAttribute("name");
+                const checkMultipleInputsWithSameNameAttr = input.closest(".js-fetch-container").querySelectorAll(`[name="${inputSameName}"]`).length;
                 const inpName = input.getAttribute("name");
-                const inpValue = input.value;
+                let inpValue;
+                if (checkMultipleInputsWithSameNameAttr > 1) {
+                    inpValue = e.currentTarget.value;
+                } else {                
+                    inpValue = input.value;                    
+                }
+
                 feed[inpName] = inpValue;
-
-
 
             }
             sendPost(url, feed);
@@ -142,7 +148,7 @@
                         }
                         if (data.includes('Location:')) {
                             const redirect = data.split(": ");
-                            location.href=redirect[1];
+                            location.href = redirect[1];
                         }
                         console.log('Success:', data);
                     })
@@ -188,11 +194,19 @@
                 .then((response) => {
                     return response.text();
                 })
-                .then((html) => {
-                    container.innerHTML = html
+                .then((html) => {   
+                    try {
+                        // check if webshim polyfill exists 
+                        $(`#${container.id}`).htmlPolyfill(html);
+                    }catch(err) {
+                        container.innerHTML = html;
+                    }
+                
                 }).then(() => {
                     addEvents(loadPath, formContainer, submitPath);
+                    showHiddenSection();
                     setContainerHeight();
+
                 });
 
         }
@@ -307,7 +321,7 @@
                         sender.setAttribute("listener", "listen");
 
                         sender.addEventListener("click", (e) => {
-                            sendDataFn(loadPath, submitPath, formContainer);
+                            sendDataFn(loadPath, submitPath, formContainer, e);
                         });
 
                     }
@@ -328,6 +342,47 @@
             }
         }
 
+
+        /**
+         * 
+         * @returns void 
+         * Function set event listeners to all elements with selector ".show-hidden-section"
+         */
+        function showHiddenSection() {
+
+            const showHiddenSectionTrigger = document.querySelectorAll(".show-hidden-section");
+
+
+            if (showHiddenSectionTrigger.length < 1) {
+                return;
+            }
+
+            for (const el of showHiddenSectionTrigger) {
+                el.addEventListener("click", showSelectedSection);
+
+            }
+
+            /**
+             * 
+             * @returns void
+             * Then get the [data-selector] of the trigger element with class ".show-hidden-section";
+             * [data-selector] Holds the selector wich to Show - remove class hidden /If selector has class hidden - it removes the class/ 
+             * 
+             */
+
+            function showSelectedSection(e) {
+
+                const trigger = e.currentTarget;
+                const selector = trigger.getAttribute("data-selector");
+
+                const elementsToShow = document.querySelectorAll(`${selector}`);
+
+                for (const elToShow of elementsToShow) {
+                    elToShow.classList.remove("hidden");
+                }
+            }
+        }
+
     }
 
     function setContainerHeight() { 
@@ -335,6 +390,5 @@
         const elemHeight = divElement.offsetHeight;    
         divElement.style=`min-height:${elemHeight}px`;
     }
-        
 
 })();
