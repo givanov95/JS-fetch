@@ -386,9 +386,8 @@
     }
 
     function setContainerHeight() { 
-        const divElement = document.querySelector(".js-fetch-container");
-        const elemHeight = divElement.offsetHeight;    
-        divElement.style=`min-height:${elemHeight}px`;
-    }
-
+        const containers = document.querySelectorAll(".js-fetch-container");
+            for(const el of containers )  
+            el.style=`min-height:${el.offsetHeight}px`;
+        }
 })();
