@@ -227,39 +227,59 @@
 
             // Validate required checkboxes and set them red border if not pass
             for (const requiredCheckbox of requiredCheckboxes) {
-                requiredCheckbox.closest(".form-group").querySelector("label").classList.remove("text-danger");
-                if (!requiredCheckbox.checked) {
-                    requiredCheckbox.closest(".form-group").querySelector("label").classList.add("text-danger");
-                    validationFail = true;
-                }
+                const thisFormGroup = requiredCheckbox.closest(".form-group");
+                if(thisFormGroup) { // IF added form group
+
+                    thisFormGroup.querySelector("label").classList.remove("text-danger");
+                    if (!requiredCheckbox.checked) {
+                        requiredCheckbox.closest(".form-group").querySelector("label").classList.add("text-danger");
+                        validationFail = true;
+                    }
+                }                
+               
             }
 
             // Validate required inputs and set them red border if not pass
             for (const requiredInput of requiredInputs) {
 
-                requiredInput.classList.remove("boder", "border-danger");
-                requiredInput.closest(".form-group").querySelector("label").classList.remove("text-danger");
+                const thisRequiredInput = requiredInput.closest(".form-group");
 
+                if(thisRequiredInput) {
+                    requiredInput.classList.remove("boder", "border-danger");
+                    thisRequiredInput.querySelector("label").classList.remove("text-danger");
 
-                if (requiredInput.value.length < 1) {
-                    requiredInput.classList.add("border", "border-danger");
-                    requiredInput.closest(".form-group").querySelector("label").classList.add("text-danger");
-                    validationFail = true;
+                    if (requiredInput.value.length < 1) {
+                        requiredInput.classList.add("border", "border-danger");
+                        requiredInput.closest(".form-group").querySelector("label").classList.add("text-danger");
+                        validationFail = true;
+                    }
+
                 }
+                                
             }
 
             // Validate inputs with pattern and set them red border if not pass
-            for (inputPatternElement of inputsWithPatternCheck) {
+            for (const inputPatternElement of inputsWithPatternCheck) {
+                const thisInputPatternFormGroup = inputPatternElement.closest(".form-group");
+
                 inputPatternElement.classList.remove("boder", "border-danger");
-                inputPatternElement.closest(".form-group").querySelector("label").classList.remove("text-danger");
+                if(thisInputPatternFormGroup) {
+                    thisInputPatternFormGroup.querySelector("label").classList.remove("text-danger");
+                }
+              
                 // check if the element with attribute pattern is required or if not empty 
                 if (inputPatternElement.hasAttribute("required") || inputPatternElement.value.length > 1) {
 
                     const pattern = inputPatternElement.getAttribute("pattern");
                     if (!validatePattern(inputPatternElement.value, pattern)) {
-                        inputPatternElement.closest(".form-group").querySelector("label").classList.add("text-danger");
-                        inputPatternElement.classList.add("border", "border-danger");
-                        validationFail = true;
+                        const thisInputPatternElement = inputPatternElement.closest(".form-group");
+
+                        if(thisInputPatternElement) {
+                            thisInputPatternElement.querySelector("label").classList.add("text-danger");
+                            inputPatternElement.classList.add("border", "border-danger");
+                            validationFail = true;
+                        }
+                        
                     }
                 }
             }
@@ -314,7 +334,7 @@
             }
             for (const sender of allSubmitters) {
 
-                if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox") {
+                if (sender.tagName == "BUTTON" || sender.getAttribute("type") == "radio" || sender.getAttribute("type") == "checkbox" || sender.tagName == "SPAN") {
 
                     if (sender.getAttribute("listener") != "listen") {
 
@@ -386,8 +406,9 @@
     }
 
     function setContainerHeight() { 
-        const containers = document.querySelectorAll(".js-fetch-container");
-            for(const el of containers )  
-            el.style=`min-height:${el.offsetHeight}px`;
-        }
+        const divElement = document.querySelector(".js-fetch-container");
+        const elemHeight = divElement.offsetHeight;    
+        divElement.style=`min-height:${elemHeight}px`;
+    }
+
 })();
